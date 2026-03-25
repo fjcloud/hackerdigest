@@ -11,6 +11,7 @@ Generated every day at 14:00 UTC.
 <!-- DAILY_START -->
 | Date | Link |
 |---|---|
+| 2026-03-25 | [digests/daily/2026-03-25.md](digests/daily/2026-03-25.md) |
 <!-- DAILY_END -->
 
 ## Generate manually
