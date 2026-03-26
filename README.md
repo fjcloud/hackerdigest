@@ -19,7 +19,7 @@ Generated every day at 14:00 UTC.
 Prerequisites:
 
 - [OpenCode](https://opencode.ai)
-- Docker (or Podman)
+- Docker (or Podman with `podman-docker` package for CLI compatibility)
 
 ```bash
 export GOOGLE_GENERATIVE_AI_API_KEY=<your-key>
