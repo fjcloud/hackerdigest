@@ -55,11 +55,22 @@ Use ONLY the HackerNews MCP tools to gather data. Do NOT use `curl`, `wget`, or 
 
 If you need to write scratch or intermediate files during investigation, write them under `/tmp/` -- NEVER in the project directory. The only files you may create in the project are `digests/daily/YYYY-MM-DD.md` and edits to `README.md`.
 
-### Step 1 -- Get today's date
+### Step 1 -- Get today's date and load previous digests
 
 ```bash
 date +%Y-%m-%d
 ```
+
+Then compute the two previous dates:
+
+```bash
+date -d "1 day ago" +%Y-%m-%d
+date -d "2 days ago" +%Y-%m-%d
+```
+
+**Read the last 2 digests** from `digests/daily/` using the computed dates. For example, if today is 2026-03-27, read `digests/daily/2026-03-26.md` and `digests/daily/2026-03-25.md`. If a file does not exist, skip it.
+
+Extract every HN story ID (`item?id=XXXXX`) from those digests into a **blacklist**. Any story ID on this list MUST be excluded from today's digest, even if it is still trending on the front page. This prevents repetition across consecutive days.
 
 ### Step 2 -- Gather the top stories
 
@@ -153,7 +164,8 @@ Brief paragraph.
 
 Run through every item in the digest and verify:
 
-1. **Quality check**: Would you personally forward this digest to a colleague? If an item feels like filler, remove it.
+1. **Dedup check**: Compare every story ID in the digest against the blacklist from Step 1. If any story appeared in the previous 2 days' digests, remove it immediately. No exceptions -- even if the story evolved or has new comments, it was already covered.
+2. **Quality check**: Would you personally forward this digest to a colleague? If an item feels like filler, remove it.
 2. **Link check**: Every story links to its HN discussion page (`https://news.ycombinator.com/item?id=XXXXX`). No broken links or placeholders.
 3. **Insight check**: Each item must add value beyond the title. If you're just restating the HN title, rewrite it or drop it.
 4. **Comment insight check**: For at least 2-3 stories, include a specific insight from the comments. This is what makes this digest different from an RSS feed.
