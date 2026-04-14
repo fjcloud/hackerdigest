@@ -6,7 +6,7 @@ Built for engineers and technical readers who want signal without noise.
 
 ## Digests
 
-Generated every day at 14:00 UTC.
+Generated every day at 08:00 CET (06:00 UTC).
 
 <!-- DAILY_START -->
 | Date | Link |
