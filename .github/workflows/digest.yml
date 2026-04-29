@@ -21,11 +21,17 @@ jobs:
           GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
         run: opencode run --agent digest "Generate today's digest"
 
+      - name: Sync digests to docs
+        run: |
+          mkdir -p docs/digests
+          cp digests/daily/*.md docs/digests/
+          ls docs/digests/*.md | sed 's|.*/||;s|\.md||' | sort | jq -R . | jq -s . > docs/digests/manifest.json
+
       - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add digests/daily/ README.md
+          git add digests/daily/ README.md docs/
           if ! git diff --cached --quiet; then
             git commit -m "daily digest: $(date +%Y-%m-%d)"
             git push
