@@ -8,45 +8,7 @@ Built for engineers and technical readers who want signal without noise.
 
 Generated every day at 08:00 CET (06:00 UTC).
 
-<!-- DAILY_START -->
-| Date | Link |
-|---|---|
-| 2026-04-29 | [digests/daily/2026-04-29.md](digests/daily/2026-04-29.md) |
-| 2026-04-28 | [digests/daily/2026-04-28.md](digests/daily/2026-04-28.md) |
-| 2026-04-27 | [digests/daily/2026-04-27.md](digests/daily/2026-04-27.md) |
-| 2026-04-26 | [digests/daily/2026-04-26.md](digests/daily/2026-04-26.md) |
-| 2026-04-25 | [digests/daily/2026-04-25.md](digests/daily/2026-04-25.md) |
-| 2026-04-24 | [digests/daily/2026-04-24.md](digests/daily/2026-04-24.md) |
-| 2026-04-23 | [digests/daily/2026-04-23.md](digests/daily/2026-04-23.md) |
-| 2026-04-22 | [digests/daily/2026-04-22.md](digests/daily/2026-04-22.md) |
-| 2026-04-21 | [digests/daily/2026-04-21.md](digests/daily/2026-04-21.md) |
-| 2026-04-20 | [digests/daily/2026-04-20.md](digests/daily/2026-04-20.md) |
-| 2026-04-19 | [digests/daily/2026-04-19.md](digests/daily/2026-04-19.md) |
-| 2026-04-18 | [digests/daily/2026-04-18.md](digests/daily/2026-04-18.md) |
-| 2026-04-17 | [digests/daily/2026-04-17.md](digests/daily/2026-04-17.md) |
-| 2026-04-15 | [digests/daily/2026-04-15.md](digests/daily/2026-04-15.md) |
-| 2026-04-14 | [digests/daily/2026-04-14.md](digests/daily/2026-04-14.md) |
-| 2026-04-13 | [digests/daily/2026-04-13.md](digests/daily/2026-04-13.md) |
-| 2026-04-12 | [digests/daily/2026-04-12.md](digests/daily/2026-04-12.md) |
-| 2026-04-11 | [digests/daily/2026-04-11.md](digests/daily/2026-04-11.md) |
-| 2026-04-10 | [digests/daily/2026-04-10.md](digests/daily/2026-04-10.md) |
-| 2026-04-09 | [digests/daily/2026-04-09.md](digests/daily/2026-04-09.md) |
-| 2026-04-08 | [digests/daily/2026-04-08.md](digests/daily/2026-04-08.md) |
-| 2026-04-07 | [digests/daily/2026-04-07.md](digests/daily/2026-04-07.md) |
-| 2026-04-06 | [digests/daily/2026-04-06.md](digests/daily/2026-04-06.md) |
-| 2026-04-05 | [digests/daily/2026-04-05.md](digests/daily/2026-04-05.md) |
-| 2026-04-04 | [digests/daily/2026-04-04.md](digests/daily/2026-04-04.md) |
-| 2026-04-03 | [digests/daily/2026-04-03.md](digests/daily/2026-04-03.md) |
-| 2026-04-02 | [digests/daily/2026-04-02.md](digests/daily/2026-04-02.md) |
-| 2026-04-01 | [digests/daily/2026-04-01.md](digests/daily/2026-04-01.md) |
-| 2026-03-31 | [digests/daily/2026-03-31.md](digests/daily/2026-03-31.md) |
-| 2026-03-30 | [digests/daily/2026-03-30.md](digests/daily/2026-03-30.md) |
-| 2026-03-29 | [digests/daily/2026-03-29.md](digests/daily/2026-03-29.md) |
-| 2026-03-28 | [digests/daily/2026-03-28.md](digests/daily/2026-03-28.md) |
-| 2026-03-27 | [digests/daily/2026-03-27.md](digests/daily/2026-03-27.md) |
-| 2026-03-26 | [digests/daily/2026-03-26.md](digests/daily/2026-03-26.md) |
-| 2026-03-25 | [digests/daily/2026-03-25.md](digests/daily/2026-03-25.md) |
-<!-- DAILY_END -->
+Browse all digests: [digests/daily/](digests/daily/) or on the web at [news.msl.cloud](https://news.msl.cloud)
 
 ## Generate manually
 

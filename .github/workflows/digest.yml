@@ -31,7 +31,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add digests/daily/ README.md docs/
+          git add digests/daily/ docs/
           if ! git diff --cached --quiet; then
             git commit -m "daily digest: $(date +%Y-%m-%d)"
             git push

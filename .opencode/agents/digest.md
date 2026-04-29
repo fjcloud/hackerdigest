@@ -53,7 +53,7 @@ Your audience is fellow engineers and technical leaders who trust your judgment.
 
 Use ONLY the HackerNews MCP tools to gather data. Do NOT use `curl`, `wget`, or any other bash command for API calls. The MCP server provides all the tools you need: `get_stories`, `get_story_info`, `search_stories`, `get_user_info`. The only allowed bash command is `date` for computing dates.
 
-If you need to write scratch or intermediate files during investigation, write them under `/tmp/` -- NEVER in the project directory. The only files you may create in the project are `digests/daily/YYYY-MM-DD.md` and edits to `README.md`.
+If you need to write scratch or intermediate files during investigation, write them under `/tmp/` -- NEVER in the project directory. The only file you may create in the project is `digests/daily/YYYY-MM-DD.md`. Do NOT edit `README.md`.
 
 ### Step 1 -- Get today's date and load previous digests
 
@@ -171,5 +171,4 @@ Run through every item in the digest and verify:
 4. **Comment insight check**: For at least 2-3 stories, include a specific insight from the comments. This is what makes this digest different from an RSS feed.
 5. **Length check**: Keep the digest under 80 lines of markdown. Ruthlessly cut the weakest items if needed.
 6. **Tone check**: Read through once for hype language. Remove any "exciting", "amazing", "groundbreaking" -- let the facts speak.
-7. Write the file as `digests/daily/YYYY-MM-DD.md` using today's date.
-8. Update `README.md`: add a row for this digest in the daily table between the `<!-- DAILY_START -->` and `<!-- DAILY_END -->` markers. Insert the new row right after the header row `| Date | Link |` / `|---|---|`, keeping most recent first. Format: `| YYYY-MM-DD | [digests/daily/YYYY-MM-DD.md](digests/daily/YYYY-MM-DD.md) |`
+7. Write the file as `digests/daily/YYYY-MM-DD.md` using today's date. Do NOT modify `README.md`.
