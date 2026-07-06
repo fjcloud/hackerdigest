@@ -14,12 +14,18 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install OpenCode
-        run: curl -fsSL https://opencode.ai/install | bash -s -- --version 1.14.31
+        run: curl -fsSL https://opencode.ai/install | bash
 
       - name: Generate digest
         env:
-          GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
-        run: opencode run --agent digest "Generate today's digest"
+          MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
+        run: |
+          TODAY=$(date +%Y-%m-%d)
+          opencode run --agent digest "Generate today's digest"
+          if [ ! -f "digests/daily/${TODAY}.md" ]; then
+            echo "::error::Digest file digests/daily/${TODAY}.md was not created"
+            exit 1
+          fi
 
       - name: Sync digests to docs
         run: |

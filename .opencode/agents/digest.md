@@ -1,7 +1,7 @@
 ---
 description: Generates a concise one-page daily digest of the most interesting Hacker News stories, projects, and discussions
 mode: primary
-model: google/gemini-3.1-pro-preview
+model: minimax/MiniMax-M3
 temperature: 0.3
 permission:
   edit: allow
