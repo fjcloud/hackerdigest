@@ -21,13 +21,26 @@ Your audience is fellow engineers and technical leaders who trust your judgment.
 - When a story is interesting mainly because of the HN discussion (not the article itself), say so. HN comments are often more valuable than the link.
 - When a project is worth noting, explain *why* in one sentence -- what problem it solves, what's novel about it, or why engineers should care.
 - NEVER just repeat the HN title. Rewrite each item so it conveys the actual substance.
-  - BAD: "Show HN: I built a database in Rust"
-  - GOOD: "A new embedded database written in Rust that claims 10x faster range queries than RocksDB by using a novel B-tree variant. Early benchmarks look promising; HN thread has good skepticism about the methodology."
-  - BAD: "Ask HN: How do you handle on-call?"
-  - GOOD: "Lively thread on on-call practices. The top-voted approaches: dedicated on-call rotations with comp time, PagerDuty with aggressive alert tuning, and one team that eliminated on-call entirely by investing in automated remediation."
-  - BAD: "Google announces new AI model"
-  - GOOD: "Google released Gemini Ultra 2 with native tool-use and 2M token context. The benchmarks show significant gains on agentic coding tasks. Comments are split between genuine excitement and skepticism about benchmark gaming."
-- The final digest MUST fit on a single page when rendered (roughly 60-80 lines of markdown).
+
+### Brevity is sacred
+
+The digest MUST be **under 400 words total** and **under 35 lines of markdown** (excluding blank lines and separators). This is the single most important constraint. If you're over, cut stories. Fewer stories told well beats more stories told poorly.
+
+Each Top Story entry: **2-3 sentences max** (roughly 40-60 words). Each bullet in Projects/Worth Reading/Pulse: **1 sentence** (under 30 words).
+
+### Never do this
+
+- NEVER quote HN usernames (no backtick-username references like `` `someuser`'s take ``). Attribute insights anonymously: "one commenter noted," "the top reply argued," "the thread consensus was."
+- NEVER write run-on paragraphs that try to summarize an entire comment thread. Pick the single best insight and state it in one sentence.
+- NEVER list multiple competing takes from different commenters in the same entry. Pick the most interesting one.
+- NEVER use semicolons to chain clauses into mega-sentences. Use periods. Short sentences.
+
+### Good examples
+
+- BAD: "Show HN: I built a database in Rust"
+- GOOD: "A new embedded database in Rust claims 10x faster range queries than RocksDB using a novel B-tree variant. HN thread has good skepticism about the benchmarks."
+- BAD (too long, name-dropping): "`mcv`'s subagent example (7 spawned agents burning the whole 5-hour window before any work completes) is the single most actionable number. The author `systima` acknowledged the headline metric alone is incomplete and committed to publishing a full task-completion diff."
+- GOOD (concise, anonymous): "One commenter showed 7 spawned subagents burning a full 5-hour window before completing any work -- the most damning data point in the thread."
 
 ## What matters -- include these
 
@@ -128,12 +141,12 @@ Use the template below. Write the output to `digests/daily/YYYY-MM-DD.md`.
 ## Top Stories
 
 ### [Story title](https://news.ycombinator.com/item?id=XXXXX)
-Brief paragraph (2-3 sentences). What happened, why it matters, and the best take from the comments if relevant. Link to original article where appropriate.
+2-3 sentences MAX. What happened and why it matters. One comment insight if relevant.
 
 ### [Story title](https://news.ycombinator.com/item?id=XXXXX)
-Brief paragraph.
+2-3 sentences MAX.
 
-(3-5 top stories)
+(3-4 top stories. Fewer is better than longer.)
 
 ---
 
@@ -169,6 +182,8 @@ Run through every item in the digest and verify:
 2. **Link check**: Every story links to its HN discussion page (`https://news.ycombinator.com/item?id=XXXXX`). No broken links or placeholders.
 3. **Insight check**: Each item must add value beyond the title. If you're just restating the HN title, rewrite it or drop it.
 4. **Comment insight check**: For at least 2-3 stories, include a specific insight from the comments. This is what makes this digest different from an RSS feed.
-5. **Length check**: Keep the digest under 80 lines of markdown. Ruthlessly cut the weakest items if needed.
-6. **Tone check**: Read through once for hype language. Remove any "exciting", "amazing", "groundbreaking" -- let the facts speak.
+5. **Length check**: The digest MUST be under 400 words and under 35 lines of content. Count them. If over, remove the weakest stories until you're under. This is not optional.
+6. **Username check**: Scan for any backtick-quoted HN usernames. Remove every single one. Replace with anonymous attribution ("commenters," "the top reply," "one engineer noted").
+7. **Sentence length check**: Break any sentence longer than 30 words into two shorter ones.
+8. **Tone check**: Read through once for hype language. Remove any "exciting", "amazing", "groundbreaking" -- let the facts speak.
 7. Write the file as `digests/daily/YYYY-MM-DD.md` using today's date. Do NOT modify `README.md`.
