@@ -21,11 +21,23 @@ jobs:
           MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
         run: |
           TODAY=$(date +%Y-%m-%d)
-          opencode run --agent digest "Generate today's digest"
-          if [ ! -f "digests/daily/${TODAY}.md" ]; then
-            echo "::error::Digest file digests/daily/${TODAY}.md was not created"
-            exit 1
-          fi
+          MAX_ATTEMPTS=3
+          for attempt in $(seq 1 "$MAX_ATTEMPTS"); do
+            echo "::notice::Digest generation attempt ${attempt}/${MAX_ATTEMPTS}"
+            # Ignore opencode exit code: it can exit 0 without writing a file,
+            # or non-zero after a model glitch. Success is the digest file.
+            opencode run --agent digest "Generate today's digest" || true
+            if [ -f "digests/daily/${TODAY}.md" ]; then
+              echo "::notice::Digest created on attempt ${attempt}"
+              exit 0
+            fi
+            echo "::warning::Attempt ${attempt} failed: digests/daily/${TODAY}.md missing"
+            if [ "$attempt" -lt "$MAX_ATTEMPTS" ]; then
+              sleep 30
+            fi
+          done
+          echo "::error::Digest file digests/daily/${TODAY}.md was not created after ${MAX_ATTEMPTS} attempts"
+          exit 1
 
       - name: Sync digests to docs
         run: |
