@@ -17,8 +17,6 @@ jobs:
         run: curl -fsSL https://opencode.ai/install | bash
 
       - name: Generate digest
-        env:
-          MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
         run: |
           TODAY=$(date +%Y-%m-%d)
           MAX_ATTEMPTS=3
