@@ -6,6 +6,11 @@ on:
     # Catch-up run: skipped if today's digest already exists
     - cron: '0 7 * * *'
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Generate the digest and upload it as an artifact, without committing'
+        type: boolean
+        default: false
 
 concurrency:
   group: daily-digest
@@ -71,15 +76,23 @@ jobs:
           echo "::error::Digest file digests/daily/${TODAY}.md was not created after ${MAX_ATTEMPTS} attempts"
           exit 1
 
+      - name: Upload digest artifact (dry run)
+        if: steps.check.outputs.skip != 'true' && inputs.dry_run == true
+        uses: actions/upload-artifact@v4
+        with:
+          name: digest-dry-run
+          path: digests/daily/
+          retention-days: 3
+
       - name: Sync digests to docs
-        if: steps.check.outputs.skip != 'true'
+        if: steps.check.outputs.skip != 'true' && inputs.dry_run != true
         run: |
           mkdir -p docs/digests
           cp digests/daily/*.md docs/digests/
           ls docs/digests/*.md | sed 's|.*/||;s|\.md||' | sort | jq -R . | jq -s . > docs/digests/manifest.json
 
       - name: Commit and push
-        if: steps.check.outputs.skip != 'true'
+        if: steps.check.outputs.skip != 'true' && inputs.dry_run != true
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -98,7 +111,7 @@ jobs:
           exit 1
 
       - name: Open issue on failure
-        if: failure()
+        if: failure() && inputs.dry_run != true
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
