@@ -3,52 +3,107 @@ name: Daily Digest
 on:
   schedule:
     - cron: '0 3 * * *'
+    # Catch-up run: skipped if today's digest already exists
+    - cron: '0 7 * * *'
   workflow_dispatch:
+
+concurrency:
+  group: daily-digest
+  cancel-in-progress: false
 
 jobs:
   generate:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     permissions:
       contents: write
+      issues: write
     steps:
       - uses: actions/checkout@v4
 
+      - name: Check for existing digest
+        id: check
+        run: |
+          TODAY=$(date +%Y-%m-%d)
+          if [ "${{ github.event_name }}" = "schedule" ] && [ -f "digests/daily/${TODAY}.md" ]; then
+            echo "::notice::Digest for ${TODAY} already exists, skipping"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Install OpenCode
-        run: curl -fsSL https://opencode.ai/install | bash
+        if: steps.check.outputs.skip != 'true'
+        run: |
+          MAX_ATTEMPTS=3
+          for attempt in $(seq 1 "$MAX_ATTEMPTS"); do
+            echo "::notice::OpenCode install attempt ${attempt}/${MAX_ATTEMPTS}"
+            if curl -fsSL https://opencode.ai/install | bash && [ -x "$HOME/.opencode/bin/opencode" ]; then
+              exit 0
+            fi
+            echo "::warning::Install attempt ${attempt} failed"
+            if [ "$attempt" -lt "$MAX_ATTEMPTS" ]; then
+              sleep $((attempt * 15))
+            fi
+          done
+          echo "::error::OpenCode installation failed after ${MAX_ATTEMPTS} attempts"
+          exit 1
 
       - name: Generate digest
+        if: steps.check.outputs.skip != 'true'
         run: |
           TODAY=$(date +%Y-%m-%d)
           MAX_ATTEMPTS=3
+          BACKOFFS=(30 120 300)
           for attempt in $(seq 1 "$MAX_ATTEMPTS"); do
-            echo "::notice::Digest generation attempt ${attempt}/${MAX_ATTEMPTS}"
+            echo "::group::Digest generation attempt ${attempt}/${MAX_ATTEMPTS}"
             # Ignore opencode exit code: it can exit 0 without writing a file,
             # or non-zero after a model glitch. Success is the digest file.
-            opencode run --agent digest "Generate today's digest" || true
+            timeout 10m opencode run --agent digest "Generate today's digest" 2>&1 || echo "::warning::opencode exited with code $?"
+            echo "::endgroup::"
             if [ -f "digests/daily/${TODAY}.md" ]; then
               echo "::notice::Digest created on attempt ${attempt}"
               exit 0
             fi
             echo "::warning::Attempt ${attempt} failed: digests/daily/${TODAY}.md missing"
             if [ "$attempt" -lt "$MAX_ATTEMPTS" ]; then
-              sleep 30
+              sleep "${BACKOFFS[$((attempt - 1))]}"
             fi
           done
           echo "::error::Digest file digests/daily/${TODAY}.md was not created after ${MAX_ATTEMPTS} attempts"
           exit 1
 
       - name: Sync digests to docs
+        if: steps.check.outputs.skip != 'true'
         run: |
           mkdir -p docs/digests
           cp digests/daily/*.md docs/digests/
           ls docs/digests/*.md | sed 's|.*/||;s|\.md||' | sort | jq -R . | jq -s . > docs/digests/manifest.json
 
       - name: Commit and push
+        if: steps.check.outputs.skip != 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add digests/daily/ docs/
-          if ! git diff --cached --quiet; then
-            git commit -m "daily digest: $(date +%Y-%m-%d)"
-            git push
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "daily digest: $(date +%Y-%m-%d)"
+          for attempt in 1 2 3; do
+            git pull --rebase origin "${GITHUB_REF_NAME}" && git push && exit 0
+            echo "::warning::Push attempt ${attempt} failed"
+            git rebase --abort 2>/dev/null || true
+            sleep $((attempt * 5))
+          done
+          echo "::error::Unable to push digest after 3 attempts"
+          exit 1
+
+      - name: Open issue on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TITLE="Daily digest failed on $(date +%Y-%m-%d)"
+          if [ -z "$(gh issue list --search "\"${TITLE}\" in:title" --state open --json number --jq '.[0].number')" ]; then
+            gh issue create --title "${TITLE}" \
+              --body "The [Daily Digest run](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}) failed. Check the logs for details."
           fi
