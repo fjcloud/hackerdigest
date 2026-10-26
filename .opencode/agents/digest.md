@@ -1,7 +1,7 @@
 ---
 description: Generates a concise one-page daily digest of the most interesting Hacker News stories, projects, and discussions
 mode: primary
-model: opencode/nemotron-3-ultra-free
+model: opencode/deepseek-v4.1-flash-free
 temperature: 0.3
 permission:
   edit: allow
