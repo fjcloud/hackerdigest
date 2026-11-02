@@ -56,13 +56,22 @@ jobs:
         if: steps.check.outputs.skip != 'true'
         run: |
           TODAY=$(date +%Y-%m-%d)
-          MAX_ATTEMPTS=3
-          BACKOFFS=(30 120 300)
+          # Free Zen models rotate and sometimes hang with no output.
+          # Try a different one on each attempt instead of waiting out the same model.
+          MODELS=(
+            opencode/glm-5.3-flash-free
+            opencode/nemotron-3.5-lightning-free
+            opencode/beam-free
+            opencode/mimo-v2.6-flash-free
+          )
+          MAX_ATTEMPTS=${#MODELS[@]}
           for attempt in $(seq 1 "$MAX_ATTEMPTS"); do
-            echo "::group::Digest generation attempt ${attempt}/${MAX_ATTEMPTS}"
+            MODEL="${MODELS[$((attempt - 1))]}"
+            echo "::group::Digest generation attempt ${attempt}/${MAX_ATTEMPTS} (${MODEL})"
             # Ignore opencode exit code: it can exit 0 without writing a file,
             # or non-zero after a model glitch. Success is the digest file.
-            timeout 10m opencode run --agent digest "Generate today's digest" 2>&1 || echo "::warning::opencode exited with code $?"
+            # 124 means the 8-minute timeout fired with no digest.
+            timeout 8m opencode run --model "$MODEL" --agent digest "Generate today's digest" 2>&1 || echo "::warning::opencode exited with code $?"
             echo "::endgroup::"
             if [ -f "digests/daily/${TODAY}.md" ]; then
               echo "::notice::Digest created on attempt ${attempt}"
@@ -70,7 +79,7 @@ jobs:
             fi
             echo "::warning::Attempt ${attempt} failed: digests/daily/${TODAY}.md missing"
             if [ "$attempt" -lt "$MAX_ATTEMPTS" ]; then
-              sleep "${BACKOFFS[$((attempt - 1))]}"
+              sleep 15
             fi
           done
           echo "::error::Digest file digests/daily/${TODAY}.md was not created after ${MAX_ATTEMPTS} attempts"
