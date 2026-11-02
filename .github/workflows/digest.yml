@@ -61,17 +61,21 @@ jobs:
           MODELS=(
             opencode/glm-5.3-flash-free
             opencode/nemotron-3.5-lightning-free
-            opencode/beam-free
-            opencode/mimo-v2.6-flash-free
           )
           MAX_ATTEMPTS=${#MODELS[@]}
           for attempt in $(seq 1 "$MAX_ATTEMPTS"); do
             MODEL="${MODELS[$((attempt - 1))]}"
+            echo "::group::Probe ${MODEL}"
+            # A tty keeps OpenCode from block-buffering, so a hang is visible in the log.
+            # The probe fails fast when the free gateway is wedged for this runner.
+            if ! timeout 90s script -qefc "opencode run --model ${MODEL} 'Reply with exactly OK'" /dev/null; then
+              echo "::warning::${MODEL} did not answer the probe, skipping it"
+              echo "::endgroup::"
+              continue
+            fi
+            echo "::endgroup::"
             echo "::group::Digest generation attempt ${attempt}/${MAX_ATTEMPTS} (${MODEL})"
-            # Ignore opencode exit code: it can exit 0 without writing a file,
-            # or non-zero after a model glitch. Success is the digest file.
-            # 124 means the 8-minute timeout fired with no digest.
-            timeout 8m opencode run --model "$MODEL" --agent digest "Generate today's digest" 2>&1 || echo "::warning::opencode exited with code $?"
+            timeout 18m script -qefc "opencode run --model ${MODEL} --agent digest \"Generate today's digest\"" /dev/null || echo "::warning::opencode exited with code $?"
             echo "::endgroup::"
             if [ -f "digests/daily/${TODAY}.md" ]; then
               echo "::notice::Digest created on attempt ${attempt}"
