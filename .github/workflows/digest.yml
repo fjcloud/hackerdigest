@@ -19,7 +19,7 @@ concurrency:
 jobs:
   generate:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 15
     permissions:
       contents: write
       issues: write
@@ -35,59 +35,9 @@ jobs:
             echo "skip=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Install OpenCode
-        if: steps.check.outputs.skip != 'true'
-        run: |
-          MAX_ATTEMPTS=3
-          for attempt in $(seq 1 "$MAX_ATTEMPTS"); do
-            echo "::notice::OpenCode install attempt ${attempt}/${MAX_ATTEMPTS}"
-            if curl -fsSL https://opencode.ai/install | bash && [ -x "$HOME/.opencode/bin/opencode" ]; then
-              exit 0
-            fi
-            echo "::warning::Install attempt ${attempt} failed"
-            if [ "$attempt" -lt "$MAX_ATTEMPTS" ]; then
-              sleep $((attempt * 15))
-            fi
-          done
-          echo "::error::OpenCode installation failed after ${MAX_ATTEMPTS} attempts"
-          exit 1
-
       - name: Generate digest
         if: steps.check.outputs.skip != 'true'
-        run: |
-          TODAY=$(date +%Y-%m-%d)
-          # Free Zen models rotate and sometimes hang with no output.
-          # Try a different one on each attempt instead of waiting out the same model.
-          MODELS=(
-            opencode/glm-5.3-flash-free
-            opencode/nemotron-3.5-lightning-free
-          )
-          MAX_ATTEMPTS=${#MODELS[@]}
-          for attempt in $(seq 1 "$MAX_ATTEMPTS"); do
-            MODEL="${MODELS[$((attempt - 1))]}"
-            echo "::group::Probe ${MODEL}"
-            # A tty keeps OpenCode from block-buffering, so a hang is visible in the log.
-            # The probe fails fast when the free gateway is wedged for this runner.
-            if ! timeout 90s script -qefc "opencode run --model ${MODEL} 'Reply with exactly OK'" /dev/null; then
-              echo "::warning::${MODEL} did not answer the probe, skipping it"
-              echo "::endgroup::"
-              continue
-            fi
-            echo "::endgroup::"
-            echo "::group::Digest generation attempt ${attempt}/${MAX_ATTEMPTS} (${MODEL})"
-            timeout 18m script -qefc "opencode run --model ${MODEL} --agent digest \"Generate today's digest\"" /dev/null || echo "::warning::opencode exited with code $?"
-            echo "::endgroup::"
-            if [ -f "digests/daily/${TODAY}.md" ]; then
-              echo "::notice::Digest created on attempt ${attempt}"
-              exit 0
-            fi
-            echo "::warning::Attempt ${attempt} failed: digests/daily/${TODAY}.md missing"
-            if [ "$attempt" -lt "$MAX_ATTEMPTS" ]; then
-              sleep 15
-            fi
-          done
-          echo "::error::Digest file digests/daily/${TODAY}.md was not created after ${MAX_ATTEMPTS} attempts"
-          exit 1
+        run: python3 scripts/build_digest.py
 
       - name: Upload digest artifact (dry run)
         if: steps.check.outputs.skip != 'true' && inputs.dry_run == true
