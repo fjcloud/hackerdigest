@@ -18,7 +18,7 @@ Prerequisites:
 - Docker (or Podman with `podman-docker` package for CLI compatibility)
 
 ```bash
-export GOOGLE_GENERATIVE_AI_API_KEY=<your-key>
+export OPENROUTER_API_KEY=<your-key>
 opencode run --agent digest "Generate today's digest"
 ```
 

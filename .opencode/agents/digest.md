@@ -1,7 +1,7 @@
 ---
 description: Generates a concise one-page daily digest of the most interesting Hacker News stories, projects, and discussions
 mode: primary
-model: opencode/glm-5.3-flash-free
+model: "openrouter/nvidia/nemotron-3-ultra-550b-a55b:free"
 temperature: 0.3
 permission:
   edit: allow
