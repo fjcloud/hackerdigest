@@ -2,9 +2,11 @@ name: Daily Digest
 
 on:
   schedule:
-    - cron: '0 3 * * *'
-    # Catch-up run: skipped if today's digest already exists
-    - cron: '0 7 * * *'
+    # GitHub starts these many hours late. Midnight UTC still lands
+    # in the Paris morning. The later run is a catch-up and skips
+    # when today's file is already there.
+    - cron: '0 0 * * *'
+    - cron: '0 5 * * *'
   workflow_dispatch:
     inputs:
       dry_run:

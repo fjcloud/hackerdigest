@@ -6,7 +6,7 @@ Built for engineers and technical readers who want signal without noise.
 
 ## Digests
 
-Generated every day at 08:00 CET (06:00 UTC).
+Generated every morning, Paris time.
 
 Browse all digests: [digests/daily/](digests/daily/) or on the web at [news.msl.cloud](https://news.msl.cloud)
 
